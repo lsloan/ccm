@@ -1,18 +1,25 @@
-import { ArrayMaxSize, ArrayMinSize, IsArray, IsIn, IsNotEmpty, ValidateNested } from 'class-validator'
+import { ArrayMaxSize, ArrayMinSize, IsArray, IsNotEmpty, ValidateNested } from 'class-validator'
 import { ApiProperty } from '@nestjs/swagger'
 import { Type } from 'class-transformer'
+
+export enum SectionEnrollmentType {
+  DesignerEnrollment ='DesignerEnrollment',
+  ObserverEnrollment = 'ObserverEnrollment',
+  StudentEnrollment = 'StudentEnrollment',
+  TaEnrollment = 'TaEnrollment',
+  TeacherEnrollment = 'TeacherEnrollment'
+}
 
 export class SectionUserDto {
   @ApiProperty()
   @IsNotEmpty()
   loginId: string
 
-  @ApiProperty()
+  @ApiProperty({ enum: SectionEnrollmentType })
   @IsNotEmpty()
-  @IsIn(['StudentEnrollment', 'TeacherEnrollment', 'TaEnrollment', 'ObserverEnrollment', 'DesignerEnrollment'])
-  type: string
+  type: SectionEnrollmentType
 
-  constructor (loginId: string, type: string) {
+  constructor (loginId: string, type: SectionEnrollmentType) {
     this.loginId = loginId
     this.type = type
   }
