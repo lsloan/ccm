@@ -1,7 +1,7 @@
 import CanvasRequestor from '@kth/canvas-api'
 
 import { CourseApiHandler } from './api.course.handler'
-import { APIErrorData, ExternalUserCanvasResult, isAPIErrorData, LoginIDResult } from './api.interfaces'
+import { APIErrorData, isAPIErrorData } from './api.interfaces'
 import {
   handleAPIError,
   HttpMethod,

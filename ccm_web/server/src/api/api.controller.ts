@@ -35,7 +35,6 @@ import {
   CanvasEnrollment,
   CourseWithSections,
   CanvasUser,
-  ExternalEnrollments,
   getRolesUserCanEnroll,
   CanvasRole
 } from '../canvas/canvas.interfaces'
