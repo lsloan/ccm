@@ -1,8 +1,4 @@
 import { hasKeys } from '../typeUtils'
-import { APIErrorData } from '../api/api.interfaces'
-import {
-  CirrusInvitationResponse
-} from '../invitation/cirrus-invitation.interfaces'
 
 // OAuth
 
@@ -154,18 +150,6 @@ export interface CanvasEnrollment {
   type: UserEnrollmentType
 }
 
-export interface ExternalEnrollments {
-  usersCreated: Array<CanvasUserLoginEmail | APIErrorData>
-  inviteResults: CirrusInvitationResponse
-  userEnrollments: CanvasEnrollment[] | APIErrorData
-}
-
-export interface ExternalEnrollment {
-  accountCreation: CanvasUserLoginEmail | APIErrorData
-  invitation: CirrusInvitationResponse
-  enrollment: CanvasEnrollment | APIErrorData
-}
-
 export interface CanvasUser {
   id?: number
   name: string
@@ -176,7 +160,6 @@ export interface CanvasUser {
 export interface CanvasUserLoginEmail extends CanvasUser {
   login_id: string
   email: string
-  error?: any
 }
 
 export interface CanvasEnrollmentWithUser extends CanvasEnrollment {

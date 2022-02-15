@@ -47,7 +47,7 @@ export class SectionApiHandler {
       logger.debug('Received response (status code unknown)')
     } catch (error) {
       const errResponse = handleAPIError(error)
-      return { statusCode: errResponse.canvasStatusCode, errors: [errResponse] }
+      return { statusCode: errResponse.statusCode, errors: [errResponse] }
     }
     return enrollmentsResult.map(e => e.user.login_id)
   }
@@ -99,7 +99,7 @@ export class SectionApiHandler {
     } catch (error) {
       const errorResponse = handleAPIError(error, `Login ID: ${userId}; Role: ${user.type}`)
       return {
-        statusCode: errorResponse.canvasStatusCode,
+        statusCode: errorResponse.statusCode,
         errors: [errorResponse]
       }
     }
@@ -125,7 +125,7 @@ export class SectionApiHandler {
       return SectionApiHandler.slimSection(response.body)
     } catch (error) {
       const errResponse = handleAPIError(error)
-      return { statusCode: errResponse.canvasStatusCode, errors: [errResponse] }
+      return { statusCode: errResponse.statusCode, errors: [errResponse] }
     }
   }
 
@@ -139,7 +139,7 @@ export class SectionApiHandler {
       return SectionApiHandler.slimSection(response.body)
     } catch (error) {
       const errResponse = handleAPIError(error)
-      return { statusCode: errResponse.canvasStatusCode, errors: [errResponse] }
+      return { statusCode: errResponse.statusCode, errors: [errResponse] }
     }
   }
 }
