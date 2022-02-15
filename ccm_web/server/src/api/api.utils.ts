@@ -22,6 +22,7 @@ export enum HttpMethod {
   Delete = 'DELETE'
 }
 
+// Rename as handleCanvasAPIError?
 export function handleAPIError (error: unknown, input?: string): APIErrorPayload {
   const failedInput = input === undefined ? null : input
   if (error instanceof CanvasApiError && error.response !== undefined) {
@@ -30,10 +31,11 @@ export function handleAPIError (error: unknown, input?: string): APIErrorPayload
     logger.error(`Received error status code: (${String(statusCode)})`)
     logger.error(`Response body: (${bodyText})`)
     logger.error(`Failed input: (${String(failedInput)})`)
-    return { canvasStatusCode: statusCode, message: bodyText, failedInput: failedInput }
+    return { statusCode, message: bodyText, failedInput: failedInput, service: 'Canvas' }
   } else {
     logger.error(`An error occurred while making a request to Canvas: ${JSON.stringify(error)}`)
-    return { canvasStatusCode: 500, message: 'A non-HTTP error occurred while communicating with Canvas.', failedInput: failedInput }
+    const defaultMessage = 'A non-HTTP error occurred while communicating with Canvas.'
+    return { statusCode: 500, message: defaultMessage, failedInput: failedInput, service: 'Canvas' }
   }
 }
 
