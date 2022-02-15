@@ -42,7 +42,7 @@ export class CourseApiHandler {
       return CourseApiHandler.slimCourse(response.body)
     } catch (error) {
       const errResponse = handleAPIError(error)
-      return { statusCode: errResponse.canvasStatusCode, errors: [errResponse] }
+      return { statusCode: errResponse.statusCode, errors: [errResponse] }
     }
   }
 
@@ -59,7 +59,7 @@ export class CourseApiHandler {
       return CourseApiHandler.slimCourse(response.body)
     } catch (error) {
       const errResponse = handleAPIError(error, JSON.stringify(courseData))
-      return { statusCode: errResponse.canvasStatusCode, errors: [errResponse] }
+      return { statusCode: errResponse.statusCode, errors: [errResponse] }
     }
   }
 
@@ -79,7 +79,7 @@ export class CourseApiHandler {
       }))
     } catch (error) {
       const errResponse = handleAPIError(error)
-      return { statusCode: errResponse.canvasStatusCode, errors: [errResponse] }
+      return { statusCode: errResponse.statusCode, errors: [errResponse] }
     }
   }
 
@@ -101,7 +101,7 @@ export class CourseApiHandler {
       return { ...SectionApiHandler.slimSection(newFullSection), total_students: 0 }
     } catch (error) {
       const errResponse = handleAPIError(error, sectionName)
-      return { statusCode: errResponse.canvasStatusCode, errors: [errResponse] }
+      return { statusCode: errResponse.statusCode, errors: [errResponse] }
     }
   }
 
