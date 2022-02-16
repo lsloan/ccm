@@ -17,7 +17,7 @@ import {
 } from '@nestjs/common'
 import { ApiQuery, ApiSecurity } from '@nestjs/swagger'
 
-import { Globals, isAPIErrorData, ExternalEnrollmentResult } from './api.interfaces'
+import { Globals, isAPIErrorData, ExternalEnrollmentResult, ExternalEnrollmentUserData } from './api.interfaces'
 import { APIService } from './api.service'
 import { InvalidTokenInterceptor } from './invalid.token.interceptor'
 import { CourseNameDto } from './dtos/api.course.name.dto'
@@ -122,7 +122,7 @@ export class APIController {
   @Post('sections/:id/enrollExternal')
   async enrollSectionExternalUsers (
     @Param('id', ParseIntPipe) sectionId: number, @Body() sectionExternalUsersData: SectionExternalUsersDto, @UserDec() user: User, @Session() session: SessionData
-  ): Promise<ExternalEnrollmentResult> {
+  ): Promise<ExternalEnrollmentUserData> {
     const sectionUsers: SectionExternalUserDto[] = sectionExternalUsersData.users
 
     let userRoles: CanvasRole[] = []
@@ -151,8 +151,8 @@ export class APIController {
     }
 
     const result = await this.apiService.enrollSectionExternalUsers(user, sectionId, sectionUsers)
-    if (!result.success) throw new HttpException(result, HttpStatus.BAD_GATEWAY)
-    return result
+    if (!result.success) throw new HttpException(result.data, HttpStatus.BAD_GATEWAY)
+    return result.data
   }
 
   @UseInterceptors(InvalidTokenInterceptor)

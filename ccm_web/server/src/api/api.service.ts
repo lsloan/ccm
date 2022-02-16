@@ -158,7 +158,7 @@ export class APIService {
       }
       resultData[email] = { userCreated }
     })
-    if (createErrors.length === sectionUsers.length) return { success: false, results: resultData }
+    if (createErrors.length === sectionUsers.length) return { success: false, data: resultData }
 
     // Results of inviting only new users
     if (newUsers.length > 0) {
@@ -167,7 +167,7 @@ export class APIService {
         resultData[email].inviteResult = inviteResult
       })
       // Bail if it failed
-      if (isCirrusErrorData(inviteResult)) return { success: false, results: resultData }
+      if (isCirrusErrorData(inviteResult)) return { success: false, data: resultData }
     }
 
     // Enroll all users
@@ -185,7 +185,7 @@ export class APIService {
       if (isAPIErrorData(result)) enrollErrors.push(result)
       resultData[email].enrollment = result
     })
-    return { success: !(createErrors.length > 0 || enrollErrors.length > 0), results: resultData }
+    return { success: !(createErrors.length > 0 || enrollErrors.length > 0), data: resultData }
   }
 
   async createSectionEnrollments (user: User, enrollments: SectionEnrollmentDto[]): Promise<CanvasEnrollment[] | APIErrorData> {

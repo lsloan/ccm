@@ -43,5 +43,5 @@ export interface ExternalEnrollmentUserData {
 
 export interface ExternalEnrollmentResult {
   success: boolean
-  results: ExternalEnrollmentUserData
+  data: ExternalEnrollmentUserData
 }
