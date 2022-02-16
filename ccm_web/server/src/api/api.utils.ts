@@ -35,7 +35,7 @@ export function handleAPIError (error: unknown, input?: string): APIErrorPayload
   } else {
     logger.error(`An error occurred while making a request to Canvas: ${JSON.stringify(error)}`)
     const defaultMessage = 'A non-HTTP error occurred while communicating with Canvas.'
-    return { statusCode: 500, message: defaultMessage, failedInput: failedInput, service: 'Canvas' }
+    return { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: defaultMessage, failedInput: failedInput, service: 'Canvas' }
   }
 }
 
