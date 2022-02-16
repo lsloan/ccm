@@ -1,4 +1,5 @@
 import { CanvasApiError } from '@kth/canvas-api'
+import { HttpStatus } from '@nestjs/common'
 
 import {
   APIErrorData, APIErrorPayload, isAPIErrorData
@@ -31,11 +32,11 @@ export function handleAPIError (error: unknown, input?: string): APIErrorPayload
     logger.error(`Received error status code: (${String(statusCode)})`)
     logger.error(`Response body: (${bodyText})`)
     logger.error(`Failed input: (${String(failedInput)})`)
-    return { statusCode, message: bodyText, failedInput: failedInput, service: 'Canvas' }
+    return { canvasStatusCode: statusCode, message: bodyText, failedInput: failedInput }
   } else {
     logger.error(`An error occurred while making a request to Canvas: ${JSON.stringify(error)}`)
     const defaultMessage = 'A non-HTTP error occurred while communicating with Canvas.'
-    return { statusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: defaultMessage, failedInput: failedInput, service: 'Canvas' }
+    return { canvasStatusCode: HttpStatus.INTERNAL_SERVER_ERROR, message: defaultMessage, failedInput: failedInput }
   }
 }
 

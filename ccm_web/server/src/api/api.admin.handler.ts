@@ -52,7 +52,7 @@ export class AdminApiHandler {
       logger.debug('Received response (status code unknown)')
     } catch (error) {
       const errResponse = handleAPIError(error)
-      return { statusCode: errResponse.statusCode, errors: [errResponse] }
+      return { statusCode: errResponse.canvasStatusCode, errors: [errResponse] }
     }
     const accountIds = accounts.map(a => a.id)
     const parentAccounts = accounts.filter(a => {
@@ -79,7 +79,7 @@ export class AdminApiHandler {
       return courses
     } catch (error) {
       const errResponse = handleAPIError(error)
-      return { statusCode: errResponse.statusCode, errors: [errResponse] }
+      return { statusCode: errResponse.canvasStatusCode, errors: [errResponse] }
     }
   }
 
@@ -157,7 +157,7 @@ export class AdminApiHandler {
     } catch (error: unknown) {
       const errorResponse = handleAPIError(error, loginId)
       return {
-        statusCode: errorResponse.statusCode,
+        statusCode: errorResponse.canvasStatusCode,
         errors: [errorResponse]
       }
     }
@@ -205,7 +205,7 @@ export class AdminApiHandler {
     } catch (error) {
       const errorResponse = handleAPIError(error, `Login ID: ${loginId}`)
       return {
-        statusCode: errorResponse.statusCode,
+        statusCode: errorResponse.canvasStatusCode,
         errors: [errorResponse]
       }
     }

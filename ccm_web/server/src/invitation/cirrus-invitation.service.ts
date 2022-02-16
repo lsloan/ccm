@@ -6,9 +6,8 @@ import { HttpService } from '@nestjs/axios'
 import { ConfigService } from '@nestjs/config'
 import { Injectable } from '@nestjs/common'
 
-import { CirrusInvitationResponse } from './cirrus-invitation.interfaces'
+import { CirrusErrorData, CirrusInvitationResponse } from './cirrus-invitation.interfaces'
 import { InvitationAPIError } from './invitation.errors'
-import { APIErrorData } from '../api/api.interfaces'
 
 import { Config } from '../config'
 import baseLogger from '../logger'
@@ -35,7 +34,7 @@ export class CirrusInvitationService {
     this.secret = invitationConfig.apiSecret
   }
 
-  async sendInvitations (userEmails: string[]): Promise<CirrusInvitationResponse | APIErrorData> {
+  async sendInvitations (userEmails: string[]): Promise<CirrusInvitationResponse | CirrusErrorData> {
     if (userEmails.length === 0) {
       throw new InvitationAPIError('Argument "userEmails" array is empty.')
     }
@@ -63,15 +62,11 @@ export class CirrusInvitationService {
     } catch (error: unknown) {
       if (axios.isAxiosError(error) && error.response !== undefined) {
         logger.error(`Cirrus API error encountered: ${JSON.stringify(error.response.data)}`)
-        return {
-          statusCode: error.response.status,
-          errors: [{
-            service: 'Cirrus',
-            statusCode: error.response.status,
-            message: String(error.response.data?.errors),
-            failedInput: null
-          }]
-        }
+        const errors = error.response.data.errors as unknown
+        const messages = (Array.isArray(errors) && errors.every(e => typeof e === 'string'))
+          ? errors
+          : [`Received an unexpected shape for Cirrus errors: ${JSON.stringify(errors)}`]
+        return { statusCode: error.response.status, messages }
       }
       throw new InvitationAPIError(String(error))
     }

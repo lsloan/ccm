@@ -1,6 +1,6 @@
 import { hasKeys } from '../typeUtils'
 
-import { CirrusInvitationResponse } from '../invitation/cirrus-invitation.interfaces'
+import { CirrusErrorData, CirrusInvitationResponse } from '../invitation/cirrus-invitation.interfaces'
 import { CanvasEnrollment, CanvasUserLoginEmail } from '../canvas/canvas.interfaces'
 
 export interface Globals {
@@ -19,8 +19,7 @@ export interface Globals {
 }
 
 export interface APIErrorPayload {
-  service: 'Canvas' | 'Cirrus'
-  statusCode: number
+  canvasStatusCode: number
   message: string
   failedInput: string | null
 }
@@ -37,7 +36,7 @@ export function isAPIErrorData (value: unknown): value is APIErrorData {
 export interface ExternalEnrollmentUserData {
   [email: string]: {
     userCreated?: CanvasUserLoginEmail | APIErrorData | false
-    inviteResult?: CirrusInvitationResponse | APIErrorData
+    inviteResult?: CirrusInvitationResponse | CirrusErrorData
     enrollment?: CanvasEnrollment | APIErrorData
   }
 }

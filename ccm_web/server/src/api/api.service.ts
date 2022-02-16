@@ -21,9 +21,8 @@ import {
   CourseWithSections
 } from '../canvas/canvas.interfaces'
 import { CanvasService } from '../canvas/canvas.service'
-import {
-  CirrusInvitationService
-} from '../invitation/cirrus-invitation.service'
+import { isCirrusErrorData } from '../invitation/cirrus-invitation.interfaces'
+import { CirrusInvitationService } from '../invitation/cirrus-invitation.service'
 import { User } from '../user/user.model'
 
 import { Config } from '../config'
@@ -75,7 +74,7 @@ export class APIService {
       logger.debug('Received response (status code unknown)')
     } catch (error) {
       const errResponse = handleAPIError(error)
-      return { statusCode: errResponse.statusCode, errors: [errResponse] }
+      return { statusCode: errResponse.canvasStatusCode, errors: [errResponse] }
     }
 
     const coursesInTerm = courses.filter(c => c.enrollment_term_id === termId)
@@ -169,7 +168,7 @@ export class APIService {
         resultData[email].inviteResult = inviteResult
       })
       // Bail if it failed
-      if (isAPIErrorData(inviteResult)) return { success: false, results: resultData }
+      if (isCirrusErrorData(inviteResult)) return { success: false, results: resultData }
     }
 
     // Enroll all users
