@@ -156,8 +156,7 @@ export class APIService {
         userCreated = result
         newUsers.push(result)
       }
-      resultData[email] = {}
-      resultData[email].userCreated = userCreated
+      resultData[email] = { userCreated }
     })
     if (createErrors.length === sectionUsers.length) return { success: false, results: resultData }
 
