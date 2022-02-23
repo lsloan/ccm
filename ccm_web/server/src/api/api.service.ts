@@ -146,19 +146,8 @@ export class APIService {
 
     // Handle create user responses: success, failure, and already exists
     createUserResponses.forEach(({ email, result }) => {
-      let userCreated: false | APIErrorData | CanvasUserLoginEmail
-      if (isAPIErrorData(result)) {
-        if (result.statusCode === HttpStatus.BAD_REQUEST) {
-          userCreated = false
-        } else {
-          userCreated = result
-          createErrors.push(result)
-        }
-      } else {
-        userCreated = result
-        newUsers.push(result)
-      }
-      resultData[email] = { userCreated }
+      if (isAPIErrorData(result)) createErrors.push(result)
+      resultData[email] = { userCreated: result }
     })
     if (createErrors.length === externalUsers.length) {
       const statusCode = determineStatusCode(createErrors.map(e => e.statusCode))

@@ -144,29 +144,61 @@ export interface CourseWithSections extends CanvasCourseBase {
 
 // Errors
 
-interface CanvasError {
+interface CanvasMessageError {
   message: string
 }
 
-function isCanvasError (value: unknown): value is CanvasError {
+function isCanvasMessageError (value: unknown): value is CanvasMessageError {
   return hasKeys(value, ['message'])
 }
 
 export interface CanvasErrorBody {
-  errors: CanvasError[]
+  errors: unknown
+}
+
+export interface CanvasErrorMessageBody extends CanvasErrorBody {
+  errors: CanvasMessageError | CanvasMessageError[]
+}
+
+interface UniqueIdErrorData {
+  attribute: 'unique_id'
+  type: string
+  message: string
+}
+
+export interface CanvasErrorUniqueIdBody extends CanvasErrorBody {
+  errors: {
+    pseudonym: {
+      unique_id: UniqueIdErrorData[]
+    }
+  }
 }
 
 export function isCanvasErrorBody (value: unknown): value is CanvasErrorBody {
-  if (!hasKeys(value, ['errors'])) {
-    return false
-  }
+  return hasKeys(value, ['errors'])
+}
 
+export function isCanvasErrorMessageBody (value: unknown): value is CanvasErrorMessageBody {
+  if (!isCanvasErrorBody(value)) return false
   if (Array.isArray(value.errors)) {
-    const result = value.errors.map(e => isCanvasError(e)).every(e => e)
-    return result
-  } else {
-    return true
+    return value.errors.every(e => isCanvasMessageError(e))
   }
+  return isCanvasMessageError(value.errors)
+}
+
+export function isCanvasErrorUniqueIdBody (value: unknown): value is CanvasErrorUniqueIdBody {
+  if (!isCanvasErrorBody(value)) return false
+  return (
+    hasKeys(value.errors, ['pseudonym']) &&
+    hasKeys(value.errors.pseudonym, ['unique_id']) &&
+    Array.isArray(value.errors.pseudonym.unique_id) &&
+    value.errors.pseudonym.unique_id.every(o => {
+      return (
+        hasKeys(o, ['attribute', 'type', 'message']) &&
+        Object.values(o).every(v => typeof v === 'string')
+      )
+    })
+  )
 }
 
 export const isOAuthErrorResponseQuery = (value: unknown): value is OAuthErrorResponseQuery => {
