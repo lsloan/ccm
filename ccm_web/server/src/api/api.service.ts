@@ -1,5 +1,5 @@
 import { SessionData } from 'express-session'
-import { HttpStatus, Injectable } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 
 import { AdminApiHandler } from './api.admin.handler'
