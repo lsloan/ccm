@@ -5,7 +5,7 @@ import pLimit from 'p-limit'
 import {
   APIErrorData, APIErrorPayload, isAPIErrorData
 } from './api.interfaces'
-import { isCanvasErrorMessageBody, isCanvasErrorUniqueIdBody } from '../canvas/canvas.interfaces'
+import { isCanvasMessageErrorBody, isCanvasMessageErrorsBody, isCanvasUniqueIdErrorsBody } from '../canvas/canvas.interfaces'
 
 import baseLogger from '../logger'
 
@@ -27,7 +27,7 @@ export function checkForUniqueIdError (error: unknown): boolean {
   logger.debug(JSON.stringify(body, null, 2))
   return (
     statusCode === HttpStatus.BAD_REQUEST &&
-    isCanvasErrorUniqueIdBody(body) &&
+    isCanvasUniqueIdErrorsBody(body) &&
     body.errors.pseudonym.unique_id.length > 0 &&
     body.errors.pseudonym.unique_id[0].type === 'taken'
   )
@@ -35,9 +35,11 @@ export function checkForUniqueIdError (error: unknown): boolean {
 
 function parseErrorBody (body: unknown): string {
   if (body === null || body === undefined || String(body).startsWith('<!DOCTYPE html>')) return 'No response body was found.'
-  if (isCanvasErrorMessageBody(body)) {
-    return Array.isArray(body.errors) ? body.errors.map(e => e.message).join(' ') : body.errors.message
-  } else if (isCanvasErrorUniqueIdBody(body)) {
+  if (isCanvasMessageErrorBody(body)) {
+    return body.message
+  } else if (isCanvasMessageErrorsBody(body)) {
+    return body.errors.map(e => e.message).join(' ')
+  } else if (isCanvasUniqueIdErrorsBody(body)) {
     return (
       body.errors.pseudonym.unique_id.length > 0
         ? body.errors.pseudonym.unique_id[0].message
@@ -54,7 +56,7 @@ export function handleAPIError (error: unknown, input?: string): APIErrorPayload
     const { statusCode, body } = error.response
     const bodyText = parseErrorBody(body)
     logger.error(`Received error status code: (${String(statusCode)})`)
-    logger.error(`Response body: (${bodyText})`)
+    logger.error(`Response message(s): (${bodyText})`)
     logger.error(`Failed input: (${String(failedInput)})`)
     return { canvasStatusCode: statusCode, message: bodyText, failedInput: failedInput }
   } else {

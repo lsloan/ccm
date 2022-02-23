@@ -142,22 +142,34 @@ export interface CourseWithSections extends CanvasCourseBase {
   sections: CanvasCourseSection[]
 }
 
-// Errors
+// Error Data
 
-interface CanvasMessageError {
+export interface CanvasMessageErrorBody {
   message: string
 }
 
-function isCanvasMessageError (value: unknown): value is CanvasMessageError {
+export function isCanvasMessageErrorBody (value: unknown): value is CanvasMessageErrorBody {
   return hasKeys(value, ['message'])
 }
 
-export interface CanvasErrorBody {
+export interface CanvasErrorsBody {
   errors: unknown
 }
 
-export interface CanvasErrorMessageBody extends CanvasErrorBody {
-  errors: CanvasMessageError | CanvasMessageError[]
+export function isCanvasErrorsBody (value: unknown): value is CanvasErrorsBody {
+  return hasKeys(value, ['errors'])
+}
+
+export interface CanvasMessageErrorsBody extends CanvasErrorsBody {
+  errors: CanvasMessageErrorBody[]
+}
+
+export function isCanvasMessageErrorsBody (value: unknown): value is CanvasMessageErrorsBody {
+  if (!isCanvasErrorsBody(value)) return false
+  return (
+    Array.isArray(value.errors) &&
+    value.errors.every(e => isCanvasMessageErrorBody(e))
+  )
 }
 
 interface UniqueIdErrorData {
@@ -166,7 +178,7 @@ interface UniqueIdErrorData {
   message: string
 }
 
-export interface CanvasErrorUniqueIdBody extends CanvasErrorBody {
+export interface CanvasUniqueIdErrorsBody extends CanvasErrorsBody {
   errors: {
     pseudonym: {
       unique_id: UniqueIdErrorData[]
@@ -174,20 +186,8 @@ export interface CanvasErrorUniqueIdBody extends CanvasErrorBody {
   }
 }
 
-export function isCanvasErrorBody (value: unknown): value is CanvasErrorBody {
-  return hasKeys(value, ['errors'])
-}
-
-export function isCanvasErrorMessageBody (value: unknown): value is CanvasErrorMessageBody {
-  if (!isCanvasErrorBody(value)) return false
-  if (Array.isArray(value.errors)) {
-    return value.errors.every(e => isCanvasMessageError(e))
-  }
-  return isCanvasMessageError(value.errors)
-}
-
-export function isCanvasErrorUniqueIdBody (value: unknown): value is CanvasErrorUniqueIdBody {
-  if (!isCanvasErrorBody(value)) return false
+export function isCanvasUniqueIdErrorsBody (value: unknown): value is CanvasUniqueIdErrorsBody {
+  if (!isCanvasErrorsBody(value)) return false
   return (
     hasKeys(value.errors, ['pseudonym']) &&
     hasKeys(value.errors.pseudonym, ['unique_id']) &&
