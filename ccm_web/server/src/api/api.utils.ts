@@ -46,7 +46,7 @@ function parseErrorBody (body: unknown): string {
         : 'Unique ID error had no message.'
     )
   } else {
-    return `Canvas response body had undocumented shape: ${JSON.stringify(body)}`
+    return `Canvas response body had unhandled shape: ${JSON.stringify(body)}`
   }
 }
 
