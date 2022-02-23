@@ -146,7 +146,11 @@ export class APIService {
 
     // Handle create user responses: success, failure, and already exists
     createUserResponses.forEach(({ email, result }) => {
-      if (isAPIErrorData(result)) createErrors.push(result)
+      if (isAPIErrorData(result)) {
+        createErrors.push(result)
+      } else if (result !== false) {
+        newUsers.push(result)
+      }
       resultData[email] = { userCreated: result }
     })
     if (createErrors.length === externalUsers.length) {
